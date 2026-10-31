@@ -1,0 +1,14 @@
+name = "otne"
+display_name = "Otne"
+logo = "https://raw.githubusercontent.com/uxnt-naxe/otne/main/resources/otne.svg"
+description = "otne是由Uxnt和uxnt-naxe开发的，并且从2022年3月6日开始，该语言参照其他的语法进行了设计和改进，成为了一门新的编程语言。"
+repo = "https://github.com/uxnt-naxe/otne"
+year = 2022
+platforms = ["Windows", "Linux", "macOS"]
+file_extensions = ["otne"]
+hello_world = """
+import stdio;
+func main () {
+    printf("Hello, World !");
+}
+"""
