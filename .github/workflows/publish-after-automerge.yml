@@ -1,0 +1,47 @@
+name: Publish after automerge
+
+# Native auto-merge merges the PR with the repository's GITHUB_TOKEN, and
+# events triggered by GITHUB_TOKEN (push, pull_request closed) do not start
+# new workflow runs — so a bot-merged PR would never reach "Deploy website"
+# on its own (first observed with PR #2: merged but not published).
+#
+# A human approval review fires this workflow (human-authored events run
+# normally): wait until the PR lands, then dispatch the deploy via
+# workflow_dispatch — the one event GITHUB_TOKEN is allowed to start.
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  pull-requests: read
+  actions: write
+  contents: read
+
+concurrency:
+  group: publish-after-automerge-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  wait-and-dispatch:
+    if: github.event.review.state == 'approved' && github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Wait for the auto-merge to land, then dispatch the deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          for i in $(seq 1 60); do
+            state=$(gh pr view "$PR" --json state --jq .state || echo UNKNOWN)
+            echo "attempt $i: $state"
+            if [ "$state" = "MERGED" ]; then
+              gh workflow run deploy.yml --ref main
+              echo "deploy dispatched"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "PR not merged within 10 minutes - dispatch manually with: gh workflow run deploy.yml --ref main"
