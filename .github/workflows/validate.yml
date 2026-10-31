@@ -1,0 +1,59 @@
+name: Validate collections
+
+# Runs on every PR. A PR is only allowed to add or edit TOML files under
+# collections/ — nothing else. The result gates the (semi-)automatic merge.
+on:
+  pull_request:
+    paths:
+      - "collections/**"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate collections
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Only files under collections/ may change
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # --no-renames so renames are reported as A/D pairs
+          changed="$(git diff --name-status --no-renames "$BASE..HEAD")"
+          echo "changed files:"
+          printf '%s\n' "$changed"
+
+          fail=0
+          while IFS=$'\t' read -r status file; do
+            [ -z "$file" ] && continue
+            case "$file" in
+              collections/*.toml)
+                if [ "$status" = "D" ]; then
+                  echo "::error file=$file::Deleting a language entry requires a maintainer, please open an issue"
+                  fail=1
+                fi
+                ;;
+              *)
+                echo "::error file=$file::A PR may only add or edit collections/*.toml (use a separate PR for scripts/ workflows or documentation)"
+                fail=1
+                ;;
+            esac
+          done <<< "$changed"
+          exit "$fail"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate TOML entries
+        run: python3 scripts/validate.py
+
+      # Also make sure the site still generates, so a bad entry can never
+      # break the Pages deploy after merge.
+      - name: Dry-build the website
+        run: python3 scripts/make_website.py --out /tmp/_site_check

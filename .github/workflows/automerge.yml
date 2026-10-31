@@ -1,0 +1,33 @@
+name: Automerge queue
+
+# Puts every opening PR into GitHub's native auto-merge queue.
+#
+# What actually happens:
+#   1. this workflow flags the PR with auto-merge (squash)
+#   2. "Validate collections" runs and must pass
+#   3. a maintainer leaves one approving review
+#   4. GitHub merges the PR by itself — no further clicks
+#
+# Requires once-only repo settings (see README "Repo setup checklist"):
+#   Settings → General → Pull Requests → Allow auto-merge
+#   Settings → Rules → Rulesets → require 1 approval + the validate check
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review]
+
+permissions:
+  # enough to toggle the auto-merge flag on the PR
+  pull-requests: write
+  contents: read
+
+# No checkout: this workflow never executes PR code, it only calls the API.
+jobs:
+  enable-automerge:
+    runs-on: ubuntu-latest
+    continue-on-error: true # stays red-free until repo rulesets are configured
+    steps:
+      - name: Enable auto-merge (squash)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh pr merge --auto --squash "${{ github.event.pull_request.number }}"

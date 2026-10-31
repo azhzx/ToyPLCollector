@@ -1,0 +1,14 @@
+# website build output
+_site/
+
+# python
+__pycache__/
+
+# rust starter template build output
+scripts/wasm-runner/TEMPLATE-rust/target/
+
+# IDE
+.idea/
+
+# OS
+.DS_Store
