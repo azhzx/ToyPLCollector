@@ -1,0 +1,23 @@
+name = "kaula"
+display_name = "Kaula"
+logo = "https://cdn.jsdelivr.net/gh/kaula-universe/Kaula_language_compiler@v1.1.309/logo.png"
+description = "更现代、更好用的 C：静态类型系统级语言，kaulac 编译到 C 交 Clang 出原生码，生成的 C 直接复用 C 头文件与目标库（extern/adopt/C ABI），与 C 生态无缝互操作。强在编译期分析：SOR 可选所有权（yield/release/extract）与六级逃逸分析，不写标注也能推断所有权与逃逸级别，据此定下回收方式与回收点——无逃逸上栈、临时对象进 KMM V4 bump 池、作用域出口批量释放，无 GC 也无需手动 free，同时报数据竞争与悬垂指针。并发是语言级 CONC 协同内核：conc fn 不加 spawn 零开销，spawn 后由预算量子与工作窃取调度、await 取值。另有 prefix/tree 卫生式结构宏、泛型、match、comptime 反射，零 libc 的 freestanding 裸机库（multiboot/PVH，四架构）。工程化且完整的工具链：包管理与多包工作空间、离线锁缓存、kaulac fmt、#[test] 单测、DWARF/GDB/LLDB 调试、编译超时与内存护栏、三平台 CI 安装包。"
+year = 2026
+keywords = ["no-gc", "high-concurrency", "static-analysis", "c-interop", "package-manager", "sor", "scope-allocator", "coroutine", "hygienic-macro", "freestanding", "c-backend", "systems"]
+platforms = ["Windows", "Linux", "macOS"]
+file_extensions = ["kl"]
+repo = "https://github.com/kaula-universe/Kaula_language_compiler"
+doc = "https://github.com/kaula-universe/Kaula_language_compiler/tree/master/docs"
+
+# playground = "https://cdn.jsdelivr.net/gh/<you>/<repo>@<tag>/kaula_toypl.wasm"
+# 暂不提供：本站要求 playground wasm 本身是「解释器」并只接受 toypl 一个导入模块，
+# 而 Kaula 目前没有解释器（kaulac 是 Go 写的编译器，.kl -> C -> Clang 原生码），
+# 详见 CONTRIBUTING.md §2 的 ABI 约束与本次提交的说明。
+
+hello_world = """
+import std.io
+
+fn main() {
+    std.io.println("Hello, Kaula!")
+}
+"""
