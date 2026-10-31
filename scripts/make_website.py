@@ -464,6 +464,8 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
  *
  * Flow: page writes the UTF-8 source into the module's memory via alloc(),
  * calls run(), and streams whatever the module sends back through output().
+ * The compiled module is cached per page session — later runs instantiate a
+ * fresh Instance (clean memory) without re-downloading or recompiling.
  *
  * This script also fills the detail page (logo, name, chips, links) from the
  * LANG JSON embedded by the page, and drives its EN/中文 toggle.
@@ -625,11 +627,19 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
     elOut.scrollTop = elOut.scrollHeight;
   }
 
+  // ---- module cache -----------------------------------------------------
+  // The wasm downloads and compiles once per page session; every Run then
+  // gets a fresh Instance from the cached Module (clean memory each time).
+  // The first fetch still uses "no-cache", so a fresh deploy is picked up
+  // on the next page load via the server's ETag.
+  var wasmModule = null; // Promise<WebAssembly.Module> | null
+
   async function doRun() {
     running = true;
     elRun.disabled = true;
     elOut.textContent = "";
-    setStatus(T().downloading);
+    var firstRun = !wasmModule;
+    setStatus(firstRun ? T().downloading : T().running);
     var t0 = performance.now();
 
     var sourceBytes;
@@ -659,23 +669,27 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
     };
 
     try {
-      var resp = await fetch(LANG.playground, { cache: "no-cache" });
-      if (!resp.ok) throw new Error("wasm download failed: HTTP " + resp.status);
-      var buf = await resp.arrayBuffer();
-      if (buf.byteLength === 0) throw new Error("wasm file is empty");
-      if (!WebAssembly.validate(buf)) {
-        throw new Error("response is not valid wasm (check the playground URL)");
+      if (!wasmModule) {
+        var resp = await fetch(LANG.playground, { cache: "no-cache" });
+        if (!resp.ok) throw new Error("wasm download failed: HTTP " + resp.status);
+        var buf = await resp.arrayBuffer();
+        if (buf.byteLength === 0) throw new Error("wasm file is empty");
+        if (!WebAssembly.validate(buf)) {
+          throw new Error("response is not valid wasm (check the playground URL)");
+        }
+        wasmModule = WebAssembly.compile(buf);
+        // A failed download/compile must not poison the cache: allow a retry.
+        wasmModule.catch(function () { wasmModule = null; });
       }
-
-      var result = await WebAssembly.instantiate(buf, imports);
-      var ex = result.instance.exports;
+      var instance = await WebAssembly.instantiate(await wasmModule, imports);
+      var ex = instance.exports;
       holder.exports = ex;
 
       if (!ex.memory || typeof ex.alloc !== "function" || typeof ex.run !== "function") {
         throw new Error(T().notAbi);
       }
 
-      setStatus(T().running);
+      if (firstRun) setStatus(T().running);
       // alloc may memory.grow(), so grab the view afterwards.
       var ptr = ex.alloc(sourceBytes.length);
       if (typeof ptr !== "number" || ptr < 0) throw new Error("alloc() returned an invalid pointer");
