@@ -35,6 +35,7 @@ import plc
 
 GITHUB_URL = "https://github.com/azhzx/ToyPLCollector"
 CONTRIB_URL = f"{GITHUB_URL}/blob/main/CONTRIBUTING.md"
+CONTRIB_URL_ZH = f"{GITHUB_URL}/blob/main/CONTRIBUTING.zh-CN.md"
 
 #: Custom domain for GitHub Pages. With the Actions deploy flow the CNAME
 #: file must ship inside the uploaded artifact, so the build writes it out.
@@ -273,28 +274,30 @@ const enColl=new Intl.Collator("en",{sensitivity:"base",numeric:true});
 let zhColl=null;
 try{zhColl=new Intl.Collator("zh-u-co-pinyin",{numeric:true});}catch(e){}
 const GROUP_ORDER=["en","zh","other"];
-const UI={
+ const UI={
  en:{
-  htmlLang:"en",
-  title:"ToyPLCollector — a gallery of toy programming languages",
-  search:"Search by name, keyword, platform, extension…",
-  all:"All platforms",
+  htmlLang:”en”,
+  title:”ToyPLCollector — a gallery of toy programming languages”,
+  search:”Search by name, keyword, platform, extension…”,
+  all:”All platforms”,
   count:(n,m)=>`${n} / ${m} languages`,
-  groups:{en:"A–Z",zh:"Chinese",other:"Other"},
+  groups:{en:”A–Z”,zh:”Chinese”,other:”Other”},
   noMatch:q=>`No language matches “${q}”.`,
-  navAdd:"Add your language →",
-  fGen:"Generated from",fMid:"— have a toy language of your own?",fLink:"Submit it with a PR",fBuilt:"Built at"
+  navAdd:”Add your language →”,
+  contrib:”__CONTRIB_URL__”,
+  fGen:”Generated from”,fMid:”— have a toy language of your own?”,fLink:”Submit it with a PR”,fBuilt:”Built at”
  },
  zh:{
-  htmlLang:"zh-CN",
-  title:"ToyPLCollector — 玩具编程语言图鉴",
-  search:"按名称、关键字、平台、扩展名搜索…",
-  all:"全部平台",
+  htmlLang:”zh-CN”,
+  title:”ToyPLCollector — 玩具编程语言图鉴”,
+  search:”按名称、关键字、平台、扩展名搜索…”,
+  all:”全部平台”,
   count:(n,m)=>`${n} / ${m} 门语言`,
-  groups:{en:"A–Z",zh:"中文",other:"其他"},
+  groups:{en:”A–Z”,zh:”中文”,other:”其他”},
   noMatch:q=>`没有匹配“${q}”的语言。`,
-  navAdd:"提交你的语言 →",
-  fGen:"由",fMid:"生成 —— 有自己写的玩具语言？",fLink:"用 PR 提交它",fBuilt:"构建于"
+  navAdd:”提交你的语言 →”,
+  contrib:”__CONTRIB_URL_ZH__”,
+  fGen:”由”,fMid:”生成 —— 有自己写的玩具语言？”,fLink:”用 PR 提交它”,fBuilt:”构建于”
  }
 };
 let lang=null;
@@ -381,9 +384,11 @@ function applyLang(){
   document.title=t.title;
   $("#q").placeholder=t.search;
   $("#nav-add").textContent=t.navAdd;
+  $("#nav-add").href=t.contrib;
   $("#f-gen").textContent=t.fGen;
   $("#f-mid").textContent=t.fMid;
   $("#f-link").textContent=t.fLink;
+  $("#f-link").href=t.contrib;
   $("#f-built").textContent=t.fBuilt;
   $("#lang").textContent=lang==="en"?"中文":"EN";
   initChips();render();
@@ -483,6 +488,7 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
   var UI = {
     en: {
       title: function (dn) { return dn + " Playground — ToyPLCollector"; },
+      contrib: "__CONTRIB_URL__",
       playground: "Playground", output: "Output",
       reset: "↺ reset", copy: "copy", copied: "copied!", run: "▶ Run",
       kw: "Keywords", pl: "Platforms", ex: "Extensions",
@@ -491,12 +497,14 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
       noWasm: "This language does not provide an online wasm runtime yet — edit and copy the code, or open its repo.",
       failed: "Run failed: ",
       srcinfo: "Playground wasm: ",
+      fLink: "Submit it with a PR",
       notAbi: "this wasm does not follow the ToyPLCollector ABI — required exports: memory, alloc(size)->ptr, run(ptr,len)->i32 (see CONTRIBUTING.md)",
       wasi: "wasm needs imports this page does not provide — it is probably a WASI module; languages must use the toypl ABI (see CONTRIBUTING.md)",
       cors: "wasm blocked by CORS — the host must send Access-Control-Allow-Origin (try raw.githubusercontent.com or cdn.jsdelivr.net)"
     },
     zh: {
       title: function (dn) { return dn + " 在线运行 — ToyPLCollector"; },
+      contrib: "__CONTRIB_URL_ZH__",
       playground: "在线运行", output: "输出",
       reset: "↺ 重置", copy: "复制", copied: "已复制！", run: "▶ 运行",
       kw: "关键字", pl: "平台", ex: "扩展名",
@@ -505,6 +513,7 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
       noWasm: "该语言暂未提供在线 wasm 运行环境——可以直接编辑、复制示例代码，或访问它的代码仓库。",
       failed: "运行失败：",
       srcinfo: "Playground wasm：",
+      fLink: "用 PR 提交它",
       notAbi: "该 wasm 不符合 ToyPLCollector ABI——需要导出 memory、alloc(size)->ptr、run(ptr,len)->i32（见 CONTRIBUTING.md）",
       wasi: "该 wasm 需要本页未提供的导入——它可能是 WASI 模块；请改用 toypl ABI（见 CONTRIBUTING.md）",
       cors: "wasm 被 CORS 拦截——托管地址必须返回 Access-Control-Allow-Origin 头（推荐 raw.githubusercontent.com 或 cdn.jsdelivr.net）"
@@ -591,6 +600,8 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
     $("#mlabel-pl").textContent = t.pl;
     $("#mlabel-ex").textContent = t.ex;
     $("#lang").textContent = lang === "en" ? "中文" : "EN";
+    var flink = $("#f-link");
+    if (flink) { flink.textContent = t.fLink; flink.href = t.contrib; }
     if (!LANG.playground) {
       setStatus(t.noWasm, "err");
     } else {
@@ -787,6 +798,7 @@ def build(coll_dir: Path, out_dir: Path) -> None:
         "__CSS__": CSS,
         "__GITHUB_URL__": GITHUB_URL,
         "__CONTRIB_URL__": CONTRIB_URL,
+        "__CONTRIB_URL_ZH__": CONTRIB_URL_ZH,
         "__BUILT_AT__": built_at,
         "__LANGS__": js_json(public),
         "__PLATFORMS__": js_json(platforms),
@@ -814,6 +826,7 @@ def build(coll_dir: Path, out_dir: Path) -> None:
             "__CSS__": CSS,
             "__GITHUB_URL__": GITHUB_URL,
             "__CONTRIB_URL__": CONTRIB_URL,
+            "__CONTRIB_URL_ZH__": CONTRIB_URL_ZH,
             "__LANG__": js_json(lang),
         })
         (play_dir / f"{lang['name']}.html").write_text(page, encoding="utf-8")
