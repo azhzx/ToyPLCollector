@@ -8,6 +8,7 @@ on:
     paths:
       - "collections/**"
       - "scripts/**"
+      - "assets/**"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 

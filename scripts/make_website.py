@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -38,6 +39,10 @@ CONTRIB_URL = f"{GITHUB_URL}/blob/main/CONTRIBUTING.md"
 #: Custom domain for GitHub Pages. With the Actions deploy flow the CNAME
 #: file must ship inside the uploaded artifact, so the build writes it out.
 SITE_DOMAIN = "coll.i2pl.com"
+
+#: Maintainer-provided playground runtimes. `assets/wasm/*.wasm` is copied
+#: into the site (same-origin hosting, so no CORS is involved).
+ASSETS_WASM_DIR = plc.REPO_ROOT / "assets" / "wasm"
 
 # --------------------------------------------------------------------------
 # tiny helpers
@@ -184,9 +189,9 @@ img.logo{object-fit:contain;background:#ffffff}
   font-size:13.5px;border:1px solid var(--line);color:var(--muted);background:#ffffff;transition:color .15s,border-color .15s}
 .btn:hover{color:var(--accent-strong);border-color:var(--accent);text-decoration:none}
 .btn.sm{padding:4px 11px;font-size:12px;border-radius:8px}
-.meta{margin:24px 0 0;display:flex;flex-direction:column;gap:9px}
-.meta-row{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
-.mlabel{flex:none;width:96px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.meta{margin:24px 0 0;display:flex;flex-direction:column;gap:10px}
+.meta-row{display:grid;grid-template-columns:96px 1fr;column-gap:14px;row-gap:5px;align-items:baseline}
+.mlabel{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
 
 /* ---- shared panels ---- */
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:22px;
@@ -218,7 +223,7 @@ footer code{font-family:var(--mono);background:var(--panel2);padding:1px 6px;bor
   main{padding:16px}
   .topbar,.subbar{padding-left:16px;padding-right:16px}
   .grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr))}
-  .mlabel{width:100%}
+  .meta-row{grid-template-columns:1fr}
   .hero{margin-top:20px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto}}
@@ -777,6 +782,12 @@ def build(coll_dir: Path, out_dir: Path) -> None:
     (out_dir / "CNAME").write_text(SITE_DOMAIN + "\n", encoding="utf-8")
 
     (out_dir / "wasm-runner.js").write_text(RUNNER_JS, encoding="utf-8")
+
+    if ASSETS_WASM_DIR.is_dir():
+        dst = out_dir / "wasm"
+        dst.mkdir(exist_ok=True)
+        for f in sorted(ASSETS_WASM_DIR.glob("*.wasm")):
+            shutil.copy2(f, dst / f.name)
 
     play_dir = out_dir / "play"
     play_dir.mkdir(exist_ok=True)
