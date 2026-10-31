@@ -18,7 +18,7 @@
 5. CI runs `validate.py`; fix anything it marks red ｜ CI 会跑校验，红了就修
 6. A maintainer approves → auto-merge does the rest ｜ 维护者 approve 后自动合并
 
-**Start from the sample** ｜ 复制示例起步: [`collections/demo.toml`](collections/demo.toml)
+**Start from a real example** ｜ 从真实条目起步: [`collections/riddle.toml`](collections/riddle.toml)
 
 ### Field reference ｜ 字段说明
 

@@ -26,7 +26,7 @@
 # Contribute ｜ 如何提交
 
 See **[CONTRIBUTING.md](CONTRIBUTING.md)** — copy
-[`collections/demo.toml`](collections/demo.toml), fill it in, open a PR.
+[`collections/riddle.toml`](collections/riddle.toml), fill it in, open a PR.
 
 # Repo setup checklist ｜ 仓库初始化（维护者一次性设置）
 

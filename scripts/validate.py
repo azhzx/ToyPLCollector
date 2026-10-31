@@ -44,11 +44,6 @@ def main(argv: list[str] | None = None) -> int:
         help="directory to scan (default: collections/)",
     )
     parser.add_argument("--no-network", action="store_true", help="skip URL reachability checks")
-    parser.add_argument(
-        "--check-demo-urls",
-        action="store_true",
-        help="also network-check the demo/sample entry (skipped by default)",
-    )
     parser.add_argument("--json", action="store_true", help="machine-readable output")
     args = parser.parse_args(argv)
 
@@ -85,16 +80,14 @@ def main(argv: list[str] | None = None) -> int:
                 names[name] = str(path)
 
                 if not args.no_network:
-                    demo = (name == "demo") and not args.check_demo_urls
-                    if not demo:
-                        # data: logo URLs are skipped by the https filter below
-                        for field in plc.URL_FIELDS + ("logo",):
-                            url = lang.get(field)
-                            if isinstance(url, str) and url.startswith("https://"):
-                                if not head_ok(url):
-                                    entry["warnings"].append(
-                                        f"{field} URL could not be reached (checked as a warning only, do not block merging): {url}"
-                                    )
+                    # data: logo URLs are skipped by the https filter below
+                    for field in plc.URL_FIELDS + ("logo",):
+                        url = lang.get(field)
+                        if isinstance(url, str) and url.startswith("https://"):
+                            if not head_ok(url):
+                                entry["warnings"].append(
+                                    f"{field} URL could not be reached (checked as a warning only, do not block merging): {url}"
+                                )
 
         report.append(entry)
 
