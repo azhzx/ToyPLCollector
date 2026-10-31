@@ -1,0 +1,20 @@
+name = "type-python"
+display_name = "TypePython"
+description = "TypeScript 风格的 Python 方言：`.tpy` 源码经 Rust 编译器做编译期类型检查后生成 `.py`，支持联合类型、接口、模板字符串等 TS 子集，编译产物可直接融入 Python 生态。A TypeScript-flavored Python dialect — a Rust compiler type-checks `.tpy` and emits `.py`."
+year = 2026
+keywords = ["typescript", "python", "type-checking", "transpiler", "compiler", "rust", "tpy"]
+platforms = ["Windows", "Linux", "macOS"]
+file_extensions = ["tpy"]
+repo = "https://atomgit.com/k4m7v2pz/type-python"
+hello_world = """
+/// hello.tpy — TypeScript 风格，编译到 Python
+
+const name: string = "TypePython"
+let year: number = 2026
+
+function greet(who: string): string {
+    return `Hello, ${who}! This is ${year}.`
+}
+
+print(greet("world"))
+"""
