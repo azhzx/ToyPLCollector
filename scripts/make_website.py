@@ -276,28 +276,28 @@ try{zhColl=new Intl.Collator("zh-u-co-pinyin",{numeric:true});}catch(e){}
 const GROUP_ORDER=["en","zh","other"];
  const UI={
  en:{
-  htmlLang:”en”,
-  title:”ToyPLCollector — a gallery of toy programming languages”,
-  search:”Search by name, keyword, platform, extension…”,
-  all:”All platforms”,
+  htmlLang:"en",
+  title:"ToyPLCollector — a gallery of toy programming languages",
+  search:"Search by name, keyword, platform, extension…",
+  all:"All platforms",
   count:(n,m)=>`${n} / ${m} languages`,
-  groups:{en:”A–Z”,zh:”Chinese”,other:”Other”},
+  groups:{en:"A–Z",zh:"Chinese",other:"Other"},
   noMatch:q=>`No language matches “${q}”.`,
-  navAdd:”Add your language →”,
-  contrib:”__CONTRIB_URL__”,
-  fGen:”Generated from”,fMid:”— have a toy language of your own?”,fLink:”Submit it with a PR”,fBuilt:”Built at”
+  navAdd:"Add your language →",
+  contrib:"__CONTRIB_URL__",
+  fGen:"Generated from",fMid:"— have a toy language of your own?",fLink:"Submit it with a PR",fBuilt:"Built at"
  },
  zh:{
-  htmlLang:”zh-CN”,
-  title:”ToyPLCollector — 玩具编程语言图鉴”,
-  search:”按名称、关键字、平台、扩展名搜索…”,
-  all:”全部平台”,
+  htmlLang:"zh-CN",
+  title:"ToyPLCollector — 玩具编程语言图鉴",
+  search:"按名称、关键字、平台、扩展名搜索…",
+  all:"全部平台",
   count:(n,m)=>`${n} / ${m} 门语言`,
-  groups:{en:”A–Z”,zh:”中文”,other:”其他”},
+  groups:{en:"A–Z",zh:"中文",other:"其他"},
   noMatch:q=>`没有匹配“${q}”的语言。`,
-  navAdd:”提交你的语言 →”,
-  contrib:”__CONTRIB_URL_ZH__”,
-  fGen:”由”,fMid:”生成 —— 有自己写的玩具语言？”,fLink:”用 PR 提交它”,fBuilt:”构建于”
+  navAdd:"提交你的语言 →",
+  contrib:"__CONTRIB_URL_ZH__",
+  fGen:"由",fMid:"生成 —— 有自己写的玩具语言？",fLink:"用 PR 提交它",fBuilt:"构建于"
  }
 };
 let lang=null;
