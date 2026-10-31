@@ -16,9 +16,10 @@ on:
     types: [opened, reopened, ready_for_review]
 
 permissions:
-  # enough to toggle the auto-merge flag on the PR
+  # enough to toggle the auto-merge flag on the PR (enablePullRequestAutoMerge
+  # also needs contents: write even though this workflow never checks out code)
   pull-requests: write
-  contents: read
+  contents: write
 
 # No checkout: this workflow never executes PR code, it only calls the API.
 jobs:
