@@ -35,6 +35,10 @@ import plc
 GITHUB_URL = "https://github.com/azhzx/ToyPLCollector"
 CONTRIB_URL = f"{GITHUB_URL}/blob/main/CONTRIBUTING.md"
 
+#: Custom domain for GitHub Pages. With the Actions deploy flow the CNAME
+#: file must ship inside the uploaded artifact, so the build writes it out.
+SITE_DOMAIN = "coll.i2pl.com"
+
 # --------------------------------------------------------------------------
 # tiny helpers
 # --------------------------------------------------------------------------
@@ -770,6 +774,7 @@ def build(coll_dir: Path, out_dir: Path) -> None:
     })
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(index_html, encoding="utf-8")
+    (out_dir / "CNAME").write_text(SITE_DOMAIN + "\n", encoding="utf-8")
 
     (out_dir / "wasm-runner.js").write_text(RUNNER_JS, encoding="utf-8")
 

@@ -1,8 +1,7 @@
 name: Deploy website
 
 # main 收到合并后的 push → 重建站点并发布到 GitHub Pages
-# (页面地址 = https://azhzx.github.io/ToyPLCollector/，
-#  自定义域名 coll.i2pl.com 待域名恢复后再配置)
+# (页面地址 = https://coll.i2pl.com/，构建产物内含 CNAME 文件)
 on:
   push:
     branches: [main]

@@ -6,9 +6,9 @@
 
 # Site ｜ 网站
 
-**[https://azhzx.github.io/ToyPLCollector/](https://azhzx.github.io/ToyPLCollector/)**
+**[https://coll.i2pl.com/](https://coll.i2pl.com/)**
 
-(新语言会自动出现在网站里。自定义域名 `coll.i2pl.com` 待域名可用后再接入。)
+(也可通过 <https://azhzx.github.io/ToyPLCollector/> 访问。新语言会自动出现在网站里。)
 
 # How it works ｜ 工作方式
 
@@ -36,7 +36,9 @@ See **[CONTRIBUTING.md](CONTRIBUTING.md)** — copy
    - Require a pull request before merging（1 个 approve）
    - Require status checks：`Validate collections`
    - Block force pushes / deletions
-4. （可选，域名就绪后）绑自定义域名并加 `CNAME`
+4. 自定义域名 ｜ Custom domain `coll.i2pl.com`：
+   - Pages 设置里绑定 `coll.i2pl.com`（构建产物内含 CNAME 文件，由 `make_website.py` 生成）
+   - DNS 服务商处添加记录：`coll CNAME → azhzx.github.io`（注意指向本账号，不是其他 github.io 主机）
 
 # Local development ｜ 本地开发
 
