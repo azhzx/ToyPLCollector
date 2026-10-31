@@ -42,6 +42,12 @@ Rules that CI enforces:
 * unknown extra fields are only a warning — new fields can be added later without breaking old entries
 * deleting other languages' files needs an issue + a maintainer
 
+### License
+
+This repo is [MIT-licensed](LICENSE). By opening a PR you agree that your
+contribution (TOML entry, playground wasm, code snippets) is published under
+the same license.
+
 ---
 
 ## 2. Online playground — the `toypl` wasm ABI

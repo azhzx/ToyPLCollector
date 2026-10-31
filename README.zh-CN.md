@@ -23,6 +23,9 @@
 带 `playground`（wasm）的语言可以直接在网页里编辑代码并运行，约定见
 [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md#2-在线运行约定toypl-wasm-abi)。
 
+`assets/wasm/` 存放维护者提供的 playground 运行时（如 `riddle.wasm`），构建时
+直接随站点发布，同源加载、无需 CORS 配置。
+
 # 如何提交
 
 见 **[CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md)** —— 复制

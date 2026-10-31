@@ -39,7 +39,7 @@ jobs:
                 fi
                 ;;
               *)
-                echo "::error file=$file::A PR may only add or edit collections/*.toml (use a separate PR for scripts/ workflows or documentation)"
+                echo "::error file=$file::A PR may only add or edit collections/*.toml (scripts/, assets/, workflows and the site are maintainer-only)"
                 fail=1
                 ;;
             esac
