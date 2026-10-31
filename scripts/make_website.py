@@ -117,19 +117,24 @@ label.sr{position:absolute;left:-9999px}
 .brand{font-weight:800;font-size:17px;letter-spacing:.01em;color:var(--ink);display:flex;align-items:center;gap:9px}
 .brand:hover{text-decoration:none;color:var(--ink)}
 .brand .pl{color:var(--accent)}
-.search{flex:1 1 240px;max-width:430px;position:relative}
-.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--faint);pointer-events:none}
-.search input{width:100%;padding:10px 16px 10px 37px;border-radius:999px;border:1px solid var(--line);
+.search{flex:1 1 300px;max-width:540px;display:flex;gap:8px;align-items:center;min-width:0}
+.search select{flex:none;max-width:150px;padding:10px 26px 10px 14px;border-radius:999px;border:1px solid var(--line);
+  background-color:#ffffff;color:var(--ink);font-size:13px;font-family:inherit;cursor:pointer;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a49b8a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;
+  transition:border-color .15s,box-shadow .15s}
+.search select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,97,26,.13)}
+.search input{flex:1 1 120px;min-width:0;padding:10px 16px;border-radius:999px;border:1px solid var(--line);
   background:#ffffff;color:var(--ink);font-size:14px;transition:border-color .15s,box-shadow .15s}
 .search input::placeholder{color:var(--faint)}
 .search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,97,26,.13)}
-.topbar nav{display:flex;gap:14px;margin-left:auto;font-size:14px;align-items:center}
+.topbar .count{margin-left:auto;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.topbar nav{display:flex;gap:14px;font-size:14px;align-items:center}
 .topbar nav a{color:var(--muted)}
 .topbar nav a:hover{color:var(--ink);text-decoration:none}
 
-/* ---- filter bar ---- */
-.subbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 26px;border-bottom:1px solid var(--line);
-  background:color-mix(in srgb,#ffffff 55%,transparent)}
+/* ---- chips ---- */
 .chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .chip{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:999px;font-size:12px;
   border:1px solid var(--line);background:var(--panel2);color:var(--muted);white-space:nowrap}
@@ -138,9 +143,6 @@ label.sr{position:absolute;left:-9999px}
 .chip.x{font-family:var(--mono);color:#5f6f8a;background:#f0f2f6;border-color:#d8dee9}
 button.chip{cursor:pointer;font-family:inherit;font-size:12.5px;padding:5px 13px;transition:border-color .15s,color .15s,background .15s}
 button.chip:hover{border-color:var(--accent);color:var(--ink)}
-button.chip.on{background:var(--accent);color:#ffffff;border-color:var(--accent);font-weight:700}
-button.chip.on:hover{background:var(--accent-strong);color:#ffffff}
-.count{color:var(--muted);font-size:13px;margin-left:auto;font-variant-numeric:tabular-nums}
 
 /* ---- gallery ---- */
 main{padding:26px;max-width:1200px;margin:0 auto}
@@ -222,7 +224,7 @@ footer code{font-family:var(--mono);background:var(--panel2);padding:1px 6px;bor
 
 @media (max-width:620px){
   main{padding:16px}
-  .topbar,.subbar{padding-left:16px;padding-right:16px}
+  .topbar{padding-left:16px;padding-right:16px}
   .grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr))}
   .meta-row{grid-template-columns:1fr}
   .hero{margin-top:20px}
@@ -244,27 +246,25 @@ INDEX_TEMPLATE = HEAD + """<body>
 <header class="topbar">
   <a class="brand" href="index.html"><span class="name">Toy<span class="pl">PL</span>Collector</span></a>
   <span class="search">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <label class="sr" for="field">Search field</label>
+    <select id="field"></select>
     <label class="sr" for="q">Search</label>
-    <input id="q" type="search" placeholder="Search by name, keyword, platform, extension…" autocomplete="off">
+    <input id="q" type="search" autocomplete="off">
   </span>
+  <span id="count" class="count"></span>
   <nav>
     <button id="lang" class="chip" type="button" aria-label="Switch language / 切换语言"></button>
     <a href="__GITHUB_URL__" target="_blank" rel="noopener">GitHub</a>
     <a id="nav-add" href="__CONTRIB_URL__" target="_blank" rel="noopener">Add your language →</a>
   </nav>
 </header>
-<section class="subbar">
-  <div id="chips" class="chips"></div>
-  <span id="count" class="count"></span>
-</section>
 <main id="cards"><noscript><p class="empty">Please enable JavaScript to browse the gallery ｜ 请启用 JavaScript 浏览。</p></noscript></main>
 <footer>
   <span id="f-gen"></span> <code>collections/*.toml</code> <span id="f-mid"></span>
   <a id="f-link" href="__CONTRIB_URL__" target="_blank" rel="noopener"></a>.
   <span id="f-built"></span> <span id="builtat">__BUILT_AT__</span>
 </footer>
-<script>const LANGS=__LANGS__;const PLATFORMS=__PLATFORMS__;</script>
+<script>const LANGS=__LANGS__;</script>
 <script>
 (function(){
 "use strict";
@@ -278,8 +278,8 @@ const GROUP_ORDER=["en","zh","other"];
  en:{
   htmlLang:"en",
   title:"ToyPLCollector — a gallery of toy programming languages",
-  search:"Search by name, keyword, platform, extension…",
-  all:"All platforms",
+  fields:{all:"All fields",kw:"Keywords",name:"Name",ext:"Extension",platform:"Platform"},
+  ph:{all:"Search all fields…",kw:"Search keywords…",name:"Search by name…",ext:"Search by extension…",platform:"Search platforms…"},
   count:(n,m)=>`${n} / ${m} languages`,
   groups:{en:"A–Z",zh:"Chinese",other:"Other"},
   noMatch:q=>`No language matches “${q}”.`,
@@ -290,8 +290,8 @@ const GROUP_ORDER=["en","zh","other"];
  zh:{
   htmlLang:"zh-CN",
   title:"ToyPLCollector — 玩具编程语言图鉴",
-  search:"按名称、关键字、平台、扩展名搜索…",
-  all:"全部平台",
+  fields:{all:"全部字段",kw:"关键词",name:"名称",ext:"后缀",platform:"平台"},
+  ph:{all:"搜索全部字段…",kw:"搜索关键词…",name:"按名称搜索…",ext:"按后缀搜索…",platform:"搜索平台…"},
   count:(n,m)=>`${n} / ${m} 门语言`,
   groups:{en:"A–Z",zh:"中文",other:"其他"},
   noMatch:q=>`没有匹配“${q}”的语言。`,
@@ -336,14 +336,21 @@ function tileHTML(l){
     logoHTML(l)+`<span class="tname">${esc(l.display_name)}</span></a>`;
 }
 
-let activePlatform=null,query="";
+const FIELD_ORDER=["all","kw","name","ext","platform"];
+
+let query="",field="all";
+
+function matches(l){
+  if(!query)return true;
+  if(field==="kw")return (l.keywords||[]).some(k=>k.toLowerCase().includes(query));
+  if(field==="name")return ((l.name||"")+" "+(l.display_name||"")).toLowerCase().includes(query);
+  if(field==="ext")return (l.file_extensions||[]).some(e=>("."+e).toLowerCase().includes(query)||e.toLowerCase().includes(query));
+  if(field==="platform")return (l.platforms||[]).some(p=>p.toLowerCase().includes(query));
+  return textOf(l).includes(query);
+}
 
 function filtered(){
-  return LANGS.filter(l=>{
-    if(activePlatform&&!(l.platforms||[]).includes(activePlatform))return false;
-    if(query&&!textOf(l).includes(query))return false;
-    return true;
-  });
+  return LANGS.filter(matches);
 }
 
 function render(){
@@ -367,22 +374,21 @@ function render(){
   $("#count").textContent=t.count(list.length,LANGS.length);
 }
 
-function initChips(){
+function initFieldSelect(){
   const t=UI[lang];
-  const box=$("#chips");
-  const mk=(label,val)=>`<button class="chip ${val===activePlatform?"on":""}" data-p="${esc(val==null?"":val)}">${esc(label)}</button>`;
-  box.innerHTML=mk(t.all,null)+PLATFORMS.map(p=>mk(p,p)).join("");
-  box.querySelectorAll("button").forEach(b=>b.onclick=()=>{
-    activePlatform=b.dataset.p===""?null:b.dataset.p;
-    initChips();render();
-  });
+  const sel=$("#field");
+  const prev=sel.value||field;
+  sel.innerHTML=FIELD_ORDER.map(k=>`<option value="${k}">${esc(t.fields[k])}</option>`).join("");
+  sel.value=FIELD_ORDER.includes(prev)?prev:"all";
+  field=sel.value;
+  $("#q").placeholder=t.ph[field];
 }
 
 function applyLang(){
   const t=UI[lang];
   document.documentElement.lang=t.htmlLang;
   document.title=t.title;
-  $("#q").placeholder=t.search;
+  $("#q").placeholder=t.ph[field];
   $("#nav-add").textContent=t.navAdd;
   $("#nav-add").href=t.contrib;
   $("#f-gen").textContent=t.fGen;
@@ -391,13 +397,18 @@ function applyLang(){
   $("#f-link").href=t.contrib;
   $("#f-built").textContent=t.fBuilt;
   $("#lang").textContent=lang==="en"?"中文":"EN";
-  initChips();render();
+  initFieldSelect();render();
 }
 
 $("#lang").addEventListener("click",()=>{
   lang=lang==="en"?"zh":"en";
   try{localStorage.setItem("tplc-lang",lang);}catch(e){}
   applyLang();
+});
+$("#field").addEventListener("change",e=>{
+  field=e.target.value;
+  $("#q").placeholder=UI[lang].ph[field];
+  render();
 });
 $("#q").addEventListener("input",e=>{query=e.target.value.trim().toLowerCase();render();});
 applyLang();
@@ -438,12 +449,12 @@ PLAY_TEMPLATE = HEAD + """<body class="play">
       <button class="btn sm" id="copysrc"></button>
     </div>
     <textarea id="code" spellcheck="false" aria-label="source code"></textarea>
-    <div class="runbar">
+    <div class="runbar" id="runbar">
       <button id="run" class="primary"></button>
       <span id="status"></span>
     </div>
   </section>
-  <section class="panel">
+  <section class="panel" id="panel-out">
     <div class="panel-head"><span id="lbl-out"></span></div>
     <pre id="out" aria-live="polite"></pre>
   </section>
@@ -489,12 +500,11 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
     en: {
       title: function (dn) { return dn + " Playground — ToyPLCollector"; },
       contrib: "__CONTRIB_URL__",
-      playground: "Playground", output: "Output",
+      playground: "Playground", sample: "Sample code", output: "Output",
       reset: "↺ reset", copy: "copy", copied: "copied!", run: "▶ Run",
       kw: "Keywords", pl: "Platforms", ex: "Extensions",
       downloading: "Downloading wasm…", running: "Running…",
       done: function (ms, code) { return "done in " + ms + " ms · exit code " + code; },
-      noWasm: "This language does not provide an online wasm runtime yet — edit and copy the code, or open its repo.",
       failed: "Run failed: ",
       srcinfo: "Playground wasm: ",
       fLink: "Submit it with a PR",
@@ -505,12 +515,11 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
     zh: {
       title: function (dn) { return dn + " 在线运行 — ToyPLCollector"; },
       contrib: "__CONTRIB_URL_ZH__",
-      playground: "在线运行", output: "输出",
+      playground: "在线运行", sample: "示例代码", output: "输出",
       reset: "↺ 重置", copy: "复制", copied: "已复制！", run: "▶ 运行",
       kw: "关键字", pl: "平台", ex: "扩展名",
       downloading: "正在下载 wasm…", running: "运行中…",
       done: function (ms, code) { return "完成，耗时 " + ms + " ms · 退出码 " + code; },
-      noWasm: "该语言暂未提供在线 wasm 运行环境——可以直接编辑、复制示例代码，或访问它的代码仓库。",
       failed: "运行失败：",
       srcinfo: "Playground wasm：",
       fLink: "用 PR 提交它",
@@ -591,7 +600,7 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
     var t = T();
     document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
     document.title = t.title(LANG.display_name || LANG.name || "Play");
-    $("#lbl-play").textContent = t.playground;
+    $("#lbl-play").textContent = LANG.playground ? t.playground : t.sample;
     $("#lbl-out").textContent = t.output;
     elReset.textContent = t.reset;
     elCopy.textContent = t.copy;
@@ -602,9 +611,7 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
     $("#lang").textContent = lang === "en" ? "中文" : "EN";
     var flink = $("#f-link");
     if (flink) { flink.textContent = t.fLink; flink.href = t.contrib; }
-    if (!LANG.playground) {
-      setStatus(t.noWasm, "err");
-    } else {
+    if (LANG.playground) {
       $("#srcinfo").textContent = t.srcinfo + LANG.playground;
     }
   }
@@ -615,9 +622,13 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
     applyLang();
   };
 
-  // ---- no wasm? degrade gracefully --------------------------------------
+  // ---- no wasm? plain sample-code page -----------------------------------
+  // Without a playground wasm there is nothing to run: relabel the panel to
+  // "Sample code" and hide the run controls and output entirely.
   if (!LANG.playground) {
-    elRun.disabled = true;
+    elRun.hidden = true;
+    var runbar = $("#runbar"); if (runbar) runbar.hidden = true;
+    var outPanel = $("#panel-out"); if (outPanel) outPanel.hidden = true;
     applyLang();
     return; // nothing else to wire up
   }
@@ -801,7 +812,6 @@ def build(coll_dir: Path, out_dir: Path) -> None:
         "__CONTRIB_URL_ZH__": CONTRIB_URL_ZH,
         "__BUILT_AT__": built_at,
         "__LANGS__": js_json(public),
-        "__PLATFORMS__": js_json(platforms),
     })
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(index_html, encoding="utf-8")
@@ -821,7 +831,8 @@ def build(coll_dir: Path, out_dir: Path) -> None:
         page = guard_placeholder(PLAY_TEMPLATE, {
             "__METATAGS__": head_block(
                 f"{lang['display_name']} — ToyPLCollector",
-                f"{lang.get('description', '')} Run it in your browser playground.",
+                f"{lang.get('description', '')} "
+                + ("Run it in your browser playground." if lang.get("playground") else "Sample code and project links."),
             ),
             "__CSS__": CSS,
             "__GITHUB_URL__": GITHUB_URL,
