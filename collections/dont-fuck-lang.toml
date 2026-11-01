@@ -8,5 +8,5 @@ platforms = ["Linux", "macOS", "Windows"]
 file_extensions = ["df"]
 repo = "https://github.com/sodous-s/Dont-fuck-lang"
 doc = "https://github.com/sodous-s/Dont-fuck-lang#readme"
-hello_world = """str s = "Hello, World!\n"
+hello_world = """str s = "Hello, World!"
 println(s)"""
