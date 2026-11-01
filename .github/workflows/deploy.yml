@@ -39,13 +39,23 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          last=$(gh api "repos/${{ github.repository }}/actions/workflows/deploy.yml/runs?status=success&per_page=1" \
-            --jq '.workflow_runs[0].head_sha' || echo "")
-          if [ "$last" = "${{ github.sha }}" ]; then
-            echo "up to date: ${{ github.sha }}"
+          # Compare against the last *successful Pages deployment*, not the
+          # last green workflow run: a run can be green while its deploy job
+          # was skipped (that actually happened, see the `deploy` job's `if`).
+          repo="${{ github.repository }}"
+          head="${{ github.sha }}"
+          dep=$(gh api "repos/$repo/deployments?environment=github-pages&per_page=1" \
+            --jq '.[0].id' 2>/dev/null || echo "")
+          deployed=""; state=""
+          if [ -n "$dep" ] && [ "$dep" != "null" ]; then
+            deployed=$(gh api "repos/$repo/deployments/$dep" --jq '.sha' 2>/dev/null || echo "")
+            state=$(gh api "repos/$repo/deployments/$dep/statuses?per_page=1" \
+              --jq '.[0].state' 2>/dev/null || echo "")
+          fi
+          echo "HEAD $head · latest pages deployment: $deployed ($state)"
+          if [ "$state" = "success" ] && [ "$deployed" = "$head" ]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
-            echo "pending publish: HEAD ${{ github.sha }} vs last deployed $last"
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -74,6 +84,10 @@ jobs:
 
   deploy:
     needs: build
+    # same always() caveat as `build`: the skipped needs-publish job (on push
+    # events) otherwise makes the implicit success() check fail transitively,
+    # silently skipping the publish while the run still looks green
+    if: always() && needs.build.result == 'success'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
