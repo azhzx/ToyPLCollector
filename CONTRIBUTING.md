@@ -121,7 +121,7 @@ The browser fetches the file, so the host must send `Access-Control-Allow-Origin
 
 ```
 PR opened ──► CI "Validate collections" passes ──► maintainer approves
-        ──► GitHub auto-merge merges (squash) ──► site rebuilds within ~1 min
+        ──► GitHub auto-merge merges (squash) ──► site rebuilds within ~1 min (bot-merged PRs publish via a 5-minute catch-up job)
 ```
 
 ## 4. Test locally
