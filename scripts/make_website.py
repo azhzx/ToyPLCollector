@@ -504,7 +504,7 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
       title: function (dn) { return dn + " Playground — ToyPLCollector"; },
       contrib: "__CONTRIB_URL__",
       playground: "Playground", sample: "Sample code", output: "Output",
-      code: "Code ↗", docs: "Docs ↗", officialPlayground: "Playground ↗", releases: "Releases ↗",
+      code: "Code ↗", docs: "Docs ↗", officialPlayground: "Official Playground ↗", releases: "Releases ↗",
       reset: "↺ reset", copy: "copy", copied: "copied!", run: "▶ Run",
       kw: "Keywords", pl: "Platforms", ex: "Extensions",
       downloading: "Downloading wasm…", running: "Running…",
