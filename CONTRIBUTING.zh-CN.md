@@ -22,7 +22,7 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| `name` | string | ✅ | 网址 slug 和文件名，`^[a-z0-9][a-z0-9-]{0,63}$`，必须与文件名一致 |
+| `name` | string | ✅ | 名称标识：字母（含中文）、数字、空格、`-`、`_`、`.`，≤64 字符，必须与文件名一致 |
 | `display_name` | string | ✅ | 展示名称，≤60 字符 |
 | `logo` | string | – | 卡片 LOGO：`data:image/...` data URL 或 https 图片链接 |
 | `description` | string | ✅ | 一句话介绍，≤500 字符（任意语言） |
@@ -32,7 +32,9 @@
 | `file_extensions` | string[] | – | 文件扩展名，如 `["bas"]` |
 | `repo` | https URL | ✅ | 源码仓库 |
 | `doc` | https URL | – | 文档 |
-| `playground` | https URL | – | 符合下文 `toypl` ABI 的 wasm，填写后可在线运行 |
+| `official_playground` | https URL | – | **官方**在线 Playground（任意技术实现），详情页展示链接 |
+| `release` | https URL | – | 发布 / 下载页，详情页展示链接 |
+| `playground` | https URL | – | 符合下文 `toypl` ABI 的 wasm，填写后详情页可内联运行 |
 | `hello_world` | string | ✅ | 示例代码，≤5000 字符 |
 
 CI 硬性规则：

@@ -30,6 +30,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 import plc
 
@@ -332,7 +333,7 @@ function logoHTML(l){
     :`<span class="logo fb ${gclass(l)}">${esc(initial(l))}</span>`;
 }
 function tileHTML(l){
-  return `<a class="tile" href="play/${esc(l.name)}.html" title="${esc(l.display_name)}">`+
+  return `<a class="tile" href="play/${esc(l.page)}.html" title="${esc(l.display_name)}">`+
     logoHTML(l)+`<span class="tname">${esc(l.display_name)}</span></a>`;
 }
 
@@ -433,8 +434,10 @@ PLAY_TEMPLATE = HEAD + """<body class="play">
       <h1><span id="ltitle"></span><span class="slug" id="lslug" hidden></span><span class="chip" id="lyear" hidden></span></h1>
       <p class="desc" id="ldesc"></p>
       <div class="actions">
-        <a class="btn" id="btn-repo" href="#" target="_blank" rel="noopener">Code ↗</a>
-        <a class="btn" id="btn-doc" href="#" target="_blank" rel="noopener">Docs ↗</a>
+        <a class="btn" id="btn-repo" href="#" target="_blank" rel="noopener"></a>
+        <a class="btn" id="btn-doc" href="#" target="_blank" rel="noopener"></a>
+        <a class="btn" id="btn-official-playground" href="#" target="_blank" rel="noopener"></a>
+        <a class="btn" id="btn-release" href="#" target="_blank" rel="noopener"></a>
       </div>
     </div>
   </div>
@@ -501,6 +504,7 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
       title: function (dn) { return dn + " Playground — ToyPLCollector"; },
       contrib: "__CONTRIB_URL__",
       playground: "Playground", sample: "Sample code", output: "Output",
+      code: "Code ↗", docs: "Docs ↗", officialPlayground: "Playground ↗", releases: "Releases ↗",
       reset: "↺ reset", copy: "copy", copied: "copied!", run: "▶ Run",
       kw: "Keywords", pl: "Platforms", ex: "Extensions",
       downloading: "Downloading wasm…", running: "Running…",
@@ -516,6 +520,7 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
       title: function (dn) { return dn + " 在线运行 — ToyPLCollector"; },
       contrib: "__CONTRIB_URL_ZH__",
       playground: "在线运行", sample: "示例代码", output: "输出",
+      code: "源码 ↗", docs: "文档 ↗", officialPlayground: "官方 Playground ↗", releases: "Releases ↗",
       reset: "↺ 重置", copy: "复制", copied: "已复制！", run: "▶ 运行",
       kw: "关键字", pl: "平台", ex: "扩展名",
       downloading: "正在下载 wasm…", running: "运行中…",
@@ -579,6 +584,9 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
   var repo = $("#btn-repo"), doc = $("#btn-doc");
   if (LANG.repo) repo.href = LANG.repo; else repo.hidden = true;
   if (LANG.doc) doc.href = LANG.doc; else doc.hidden = true;
+  var opg = $("#btn-official-playground"), rel = $("#btn-release");
+  if (LANG.official_playground) opg.href = LANG.official_playground; else opg.hidden = true;
+  if (LANG.release) rel.href = LANG.release; else rel.hidden = true;
 
   chipRow("#row-kw", "#lkw", LANG.keywords, "k");
   chipRow("#row-pl", "#lpl", LANG.platforms, "p");
@@ -609,6 +617,10 @@ RUNNER_JS = r"""/* ToyPLCollector — universal wasm playground runner.
     $("#mlabel-pl").textContent = t.pl;
     $("#mlabel-ex").textContent = t.ex;
     $("#lang").textContent = lang === "en" ? "中文" : "EN";
+    $("#btn-repo").textContent = t.code;
+    $("#btn-doc").textContent = t.docs;
+    $("#btn-official-playground").textContent = t.officialPlayground;
+    $("#btn-release").textContent = t.releases;
     var flink = $("#f-link");
     if (flink) { flink.textContent = t.fLink; flink.href = t.contrib; }
     if (LANG.playground) {
@@ -778,6 +790,9 @@ def lang_public(lang: dict) -> dict:
     """The JSON shape the pages embed (drop private keys)."""
     out = {
         "name": lang["name"],
+        # URL-safe form of `name` for the play-page link (names may contain
+        # spaces / CJK now that the field accepts them)
+        "page": quote(str(lang["name"]), safe=""),
         "display_name": lang.get("display_name") or lang["name"],
         "logo": lang.get("logo"),
         "description": lang.get("description", ""),
@@ -787,6 +802,8 @@ def lang_public(lang: dict) -> dict:
         "file_extensions": lang.get("file_extensions") or [],
         "repo": lang.get("repo", ""),
         "doc": lang.get("doc"),
+        "official_playground": lang.get("official_playground"),
+        "release": lang.get("release"),
         "playground": lang.get("playground"),
         "hello_world": lang.get("hello_world", ""),
     }

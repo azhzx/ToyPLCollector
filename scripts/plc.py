@@ -18,7 +18,8 @@ COLLECTIONS_DIR = REPO_ROOT / "collections"
 #: Platforms are a closed set so the website's filter chips stay meaningful.
 KNOWN_PLATFORMS = ["Windows", "Linux", "macOS", "Web", "Other"]
 
-SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,63}$")
+SLUG_RE = re.compile(r"^[\w][\w .\-]{0,63}$")  # unicode letters/digits + space - _ .
+NAME_MAX = 64
 
 REQUIRED_FIELDS = ("name", "display_name", "description", "repo", "hello_world")
 
@@ -34,11 +35,13 @@ FIELD_TYPES = {
     "file_extensions": list,
     "repo": str,
     "doc": str,
+    "official_playground": str,
+    "release": str,
     "playground": str,
     "hello_world": str,
 }
 
-URL_FIELDS = ("repo", "doc", "playground")
+URL_FIELDS = ("repo", "doc", "official_playground", "release", "playground")
 
 #: logo accepts either an inline ``data:image/...`` URL or an https image URL
 LOGO_IMAGE_RE = re.compile(r"\.(png|jpe?g|gif|svg|webp|avif|ico)$", re.IGNORECASE)
@@ -131,16 +134,23 @@ def lint_language(path: Path, lang: dict) -> tuple[list[str], list[str]]:
     if errors:
         return errors, warnings  # missing basics: stop before deeper checks
 
-    # -- name / slug -------------------------------------------------------
+    # -- name -------------------------------------------------------------
     name = lang["name"]
-    if not SLUG_RE.match(str(name)):
+    if (
+        not isinstance(name, str)
+        or not SLUG_RE.match(name)
+        or name != name.strip()
+        or name.endswith(".")
+        or len(name) > NAME_MAX
+    ):
         errors.append(
-            "field 'name' must match ^[a-z0-9][a-z0-9-]{0,63}$ "
-            "e.g. 'toy-basic' (this is used for URLs and files)"
+            "field 'name' may only contain letters (incl. CJK), digits, spaces, '-', '_' and '.', "
+            f"up to {NAME_MAX} characters, no leading/trailing space (it must equal the file name)"
         )
-    expected_name = path.stem
-    if name != expected_name:
-        errors.append(f"field 'name' ({name!r}) must equal the file name 'collections/{path.stem}.toml'")
+    else:
+        expected_name = path.stem
+        if name != expected_name:
+            errors.append(f"field 'name' ({name!r}) must equal the file name 'collections/{path.stem}.toml'")
     if len(str(lang["display_name"])) > MAX["display_name"]:
         errors.append(f"display_name longer than {MAX['display_name']} characters")
 

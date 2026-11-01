@@ -8,6 +8,8 @@ platforms = ["Windows", "Linux", "macOS"]
 file_extensions = ["rid"]
 repo = "https://github.com/riddle-lang/riddle"
 doc = "https://riddle-lang.github.io/"
+official_playground = "https://riddle-lang.github.io/playground/"
+release = "https://github.com/riddle-lang/riddle/releases"
 playground = "https://coll.i2pl.com/wasm/riddle.wasm"
 hello_world = """
 struct Point {

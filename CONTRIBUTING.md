@@ -22,7 +22,7 @@ English | [简体中文](CONTRIBUTING.zh-CN.md)
 
 | field | type | required | what it is |
 |---|---|---|---|
-| `name` | string | ✅ | URL slug, `^[a-z0-9][a-z0-9-]{0,63}$`, must equal the file name |
+| `name` | string | ✅ | Human-readable id: letters (incl. CJK), digits, spaces, `-`, `_`, `.` — ≤64 chars, must equal the file name |
 | `display_name` | string | ✅ | Shown name, ≤60 chars |
 | `logo` | string | – | Logo for the gallery card: a `data:image/...` URL or an https image URL |
 | `description` | string | ✅ | ≤500 chars, any language |
@@ -32,7 +32,9 @@ English | [简体中文](CONTRIBUTING.zh-CN.md)
 | `file_extensions` | string[] | – | e.g. `["bas"]` |
 | `repo` | https URL | ✅ | Source code |
 | `doc` | https URL | – | Documentation |
-| `playground` | https URL | – | Your `*.wasm` following the `toypl` ABI below — enables Run |
+| `official_playground` | https URL | – | The language's **own** web playground (any tech) — linked from the detail page |
+| `release` | https URL | – | Releases / downloads page — linked from the detail page |
+| `playground` | https URL | – | Your `*.wasm` following the `toypl` ABI below — enables the inline Run panel |
 | `hello_world` | string | ✅ | Sample code, ≤5000 chars |
 
 Rules that CI enforces:
