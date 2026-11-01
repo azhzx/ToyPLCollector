@@ -41,6 +41,7 @@ Rules that CI enforces:
 
 * PRs may only add/edit `collections/*.toml` — scripts, workflows and the site are maintainer-only
 * no duplicate `name`
+* all URL fields must be `https://`; a URL that cannot be reached is reported as a warning only, so flaky hosts never block a merge
 * unknown extra fields are only a warning — new fields can be added later without breaking old entries
 * deleting other languages' files needs an issue + a maintainer
 
