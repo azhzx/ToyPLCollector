@@ -5,7 +5,8 @@ name: Deploy website
 #
 # 每 5 分钟的 schedule 兜底：native auto-merge 用 GITHUB_TOKEN 合并，其 push
 # 事件不会触发 workflow（PR #7 的教训），所以 bot 合并的 PR 靠这里的定时任务
-# 对比「最新 commit 是否已部署」来补发，最坏延迟 5 分钟。
+# 对比「最新 GitHub Pages deployment」是否等于 HEAD 来补发，最坏延迟约 5 分钟
+# （GitHub 的 cron 调度在繁忙时段可能更晚）。
 on:
   push:
     branches: [main]
