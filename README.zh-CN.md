@@ -26,6 +26,10 @@
 `assets/wasm/` 存放维护者提供的 playground 运行时（如 `riddle.wasm`），构建时
 直接随站点发布，同源加载、无需 CORS 配置。
 
+条目若填写了 `official_playground` 或 `release`，详情页会额外链接到语言自带的
+在线 Playground 与发布/下载页。`name` 字段允许中文/英文/数字/空格及 `-` `_` `.`，
+页面链接会自动 URL 编码。
+
 # 如何提交
 
 见 **[CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md)** —— 复制

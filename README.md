@@ -26,6 +26,11 @@ Languages that ship a `playground` (wasm) can be edited and run right in the
 browser — see the convention in
 [CONTRIBUTING.md](CONTRIBUTING.md#2-online-playground--the-toypl-wasm-abi).
 
+When an entry also fills `official_playground` or `release`, its page links to
+the language's own web playground and its releases / downloads page. The `name`
+field accepts letters (incl. Chinese), digits, spaces and `-` `_` `.`; links are
+URL-encoded automatically.
+
 `assets/wasm/` holds maintainer-provided playground runtimes (e.g.
 `riddle.wasm`); the build serves them from the site itself, so they load
 same-origin without any CORS setup.
